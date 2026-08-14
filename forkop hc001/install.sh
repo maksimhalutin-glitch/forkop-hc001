@@ -4,7 +4,7 @@ set -e
 
 # ============================================================
 # HC-001 Forkop Installer
-# OpenLumi 23.05.4 / i.MX Cortex-A7
+# Forkop 1.0.5 + sing-box 1.12.0
 # ============================================================
 
 REPO_RAW="https://raw.githubusercontent.com/maksimhalutin-glitch/forkop-hc001/main/forkop%20hc001"
@@ -21,7 +21,7 @@ echo "=========================================="
 echo
 
 # ------------------------------------------------------------
-# Root check
+# Check root
 # ------------------------------------------------------------
 
 if [ "$(id -u)" != "0" ]; then
@@ -30,7 +30,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # ------------------------------------------------------------
-# Read OpenWrt/OpenLumi information
+# Check OpenWrt/OpenLumi
 # ------------------------------------------------------------
 
 if [ ! -f /etc/openwrt_release ]; then
@@ -49,8 +49,19 @@ echo "  Architecture : ${DISTRIB_ARCH}"
 echo
 
 # ------------------------------------------------------------
-# Architecture check
+# HC-001 compatibility check
 # ------------------------------------------------------------
+
+if [ "${DISTRIB_TARGET}" != "imx/cortexa7" ]; then
+    echo "ERROR: Unsupported target."
+    echo
+    echo "Required:"
+    echo "  imx/cortexa7"
+    echo
+    echo "Detected:"
+    echo "  ${DISTRIB_TARGET}"
+    exit 1
+fi
 
 if [ "${DISTRIB_ARCH}" != "arm_cortex-a7_neon-vfpv4" ]; then
     echo "ERROR: Unsupported architecture."
@@ -63,19 +74,7 @@ if [ "${DISTRIB_ARCH}" != "arm_cortex-a7_neon-vfpv4" ]; then
     exit 1
 fi
 
-if [ "${DISTRIB_TARGET}" != "imx/cortexa7" ]; then
-    echo "ERROR: Unsupported OpenWrt target."
-    echo
-    echo "Required:"
-    echo "  imx/cortexa7"
-    echo
-    echo "Detected:"
-    echo "  ${DISTRIB_TARGET}"
-    exit 1
-fi
-
-echo "Architecture check: OK"
-echo "Target check:       OK"
+echo "HC-001 architecture check: OK"
 echo
 
 # ------------------------------------------------------------
@@ -188,7 +187,7 @@ rm -rf "${TMP_DIR}"
 
 echo
 echo "=========================================="
-echo "           Installation complete"
+echo "       Installation completed!"
 echo "=========================================="
 echo
 
